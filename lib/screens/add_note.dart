@@ -76,53 +76,9 @@ class _AddNoteState extends State<AddNote> {
                       const SizedBox(width: 10),
                       GestureDetector(
                         onTap: (() async {
-                          SharedPreferences pref =
-                              await SharedPreferences.getInstance();
-
-                          List<String>? notesColor =
-                              pref.getStringList('notesColor');
-                          List<String>? notesTitle =
-                              pref.getStringList('notesTitle');
-                          List<String>? notesContent =
-                              pref.getStringList('notesContent');
-                          if (title == ' ' || content == '') {
-                            AnimatedSnackBar.rectangle(
-                              duration: Duration(seconds: 1),
-                              'Error',
-                              'Check your title and content',
-                              type: AnimatedSnackBarType.error,
-                              brightness: Brightness.light,
-                            ).show(
-                              context,
-                            );
+                          if (title == ' ' || content == ' ') {
                           } else {
-                            if (notesColor == null) {
-                              print(0);
-                              notesColor = [selectedColor];
-                              notesContent = [content];
-                              notesTitle = [title];
-                              pref.setStringList('s', notesColor);
-                              pref.setStringList('notesTitle', notesTitle);
-                              pref.setStringList('notesContent', notesContent);
-                            } else {
-                              print(1);
-                              notesColor.add(selectedColor);
-                              notesTitle!.add(title);
-                              notesContent!.add(content);
-                              pref.setStringList('notesColor', notesColor);
-                              pref.setStringList('notesTitle', notesTitle);
-                              pref.setStringList('notesContent', notesContent);
-                            }
-
-                            //await pref.remove('notesColor');
-                            // await pref.remove('notesTitle');
-                            // await pref.remove('notesContent');
-
-                            print(notesColor);
-                            print(notesTitle);
-                            print(notesContent);
-                            //print(notesContent);
-                            // print(notesTitle);
+                            await mode.addNote(title, content, selectedColor);
                           }
                         }),
                         child: Icon(Icons.save,

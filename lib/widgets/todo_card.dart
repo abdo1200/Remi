@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TodoCard extends StatelessWidget {
-  const TodoCard({super.key});
+  final Map<String, bool>? map;
+  final String? title;
+  const TodoCard({super.key, required this.map, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -27,65 +29,41 @@ class TodoCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('Collage Project  ',
+              Text(title!,
                   style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w100,
-                      color: mode.textColor)),
-              Text(' ( 3 of 5 tasks)',
-                  style: TextStyle(
-                      fontSize: 13,
                       fontWeight: FontWeight.w100,
                       color: mode.textColor)),
             ],
           ),
           const SizedBox(height: 15),
-          Row(
-            children: [
-              Icon(
-                Icons.check_circle_outline,
-                color: mainColor,
-              ),
-              const SizedBox(width: 10),
-              Text('Draw Diagrams',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w100,
-                      color: mode.textColor))
-            ],
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: mainColor,
-              ),
-              const SizedBox(width: 10),
-              Text('Design App Ui',
-                  style: TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w100,
-                      color: mode.textColor))
-            ],
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Icon(
-                Icons.check_circle,
-                color: mainColor,
-              ),
-              const SizedBox(width: 10),
-              Text('Start Coding',
-                  style: TextStyle(
-                      fontSize: 15,
-                      decoration: TextDecoration.lineThrough,
-                      fontWeight: FontWeight.w100,
-                      color: mode.textColor))
-            ],
-          ),
+          ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: map!.length,
+              itemBuilder: ((context, index) {
+                String item = map!.keys.elementAt(index);
+                bool? select = map![item];
+                return Row(
+                  children: [
+                    select!
+                        ? Icon(
+                            Icons.check_circle,
+                            color: mainColor,
+                          )
+                        : Icon(Icons.circle_outlined, color: mainColor),
+                    const SizedBox(width: 10),
+                    Text(item,
+                        style: TextStyle(
+                            decoration: select
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w100,
+                            color: mode.textColor))
+                  ],
+                );
+              })),
         ],
       ),
     );

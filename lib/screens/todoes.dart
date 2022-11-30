@@ -1,3 +1,6 @@
+import 'package:provider/provider.dart';
+import 'package:remi/providers/mode_provider.dart';
+import 'package:remi/screens/add_todo.dart';
 import 'package:remi/widgets/tabs_header.dart';
 import 'package:remi/widgets/todo_card.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +10,8 @@ class Todoes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var mode = Provider.of<ModeProvider>(context);
+    var height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: SingleChildScrollView(
         child: SizedBox(
@@ -14,12 +19,50 @@ class Todoes extends StatelessWidget {
           child: Column(
             children: [
               TabsHeader(
-                  function: () {}, title: 'ToDo Lists', btnText: 'Add List'),
-              for (int i = 0; i < 5; i++)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: TodoCard(),
-                ),
+                  function: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AddTodo()),
+                    );
+                  },
+                  title: 'ToDo Lists',
+                  btnText: 'Add List'),
+              FutureBuilder<void>(
+                  future: mode.getTodoes(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (mode.todoes.isNotEmpty) {
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: mode.todoes.length,
+                          itemBuilder: (context, index) {
+                            String id = mode.todoes.keys.elementAt(index);
+                            return FutureBuilder<Map<String, bool>>(
+                                future: mode.getTodoItems(id),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    return Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: TodoCard(
+                                          title: mode.todoes[id],
+                                          map: snapshot.data,
+                                        ));
+                                  } else {
+                                    return const CircularProgressIndicator();
+                                  }
+                                });
+                          },
+                        );
+                      } else {
+                        return const Text('No Todoes yet');
+                      }
+                      // return Container();
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
             ],
           ),
         ),

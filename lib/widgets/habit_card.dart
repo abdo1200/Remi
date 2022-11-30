@@ -5,9 +5,19 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class HabitCard extends StatelessWidget {
-  final String habit;
-  final double percent;
-  const HabitCard({super.key, required this.habit, required this.percent});
+  final String? habit;
+  final List<bool>? days;
+  const HabitCard({super.key, required this.habit, required this.days});
+
+  double percent(List<bool>? days) {
+    int checked = 0;
+    for (int i = 0; i < days!.length; i++) {
+      if (days[i] == true) {
+        checked = checked + 1;
+      }
+    }
+    return ((checked % days.length) * 100);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +40,7 @@ class HabitCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(habit,
+            Text(habit!,
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w100,
@@ -38,9 +48,9 @@ class HabitCard extends StatelessWidget {
             CircularPercentIndicator(
               radius: 25.0,
               lineWidth: 2.0,
-              percent: percent,
+              percent: percent(days),
               center: Text(
-                '${percent * 100} %',
+                '${percent(days)} %',
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w100,

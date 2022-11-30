@@ -121,7 +121,7 @@ class Home extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            const HabitCard(habit: 'Learning English', percent: .50),
+            // const HabitCard(habit: 'Learning English', percent: .50),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -146,7 +146,7 @@ class Home extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
-            const TodoCard()
+            // const TodoCard()
           ],
         ),
       ),
