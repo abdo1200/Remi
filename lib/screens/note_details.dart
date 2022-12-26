@@ -1,18 +1,28 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
 import 'package:remi/providers/mode_provider.dart';
 import 'package:remi/screens/bottombar.dart';
 
-class AddNote extends StatefulWidget {
-  const AddNote({super.key});
+class NoteDetials extends StatefulWidget {
+  final String id;
+  final Color color;
+  final String title;
+  final String content;
+  const NoteDetials(
+      {super.key,
+      required this.id,
+      required this.color,
+      required this.title,
+      required this.content});
 
   @override
-  State<AddNote> createState() => _AddNoteState();
+  State<NoteDetials> createState() => _NoteDetialsState();
 }
 
-class _AddNoteState extends State<AddNote> {
-  String selectedColor = '#ed5f72';
+class _NoteDetialsState extends State<NoteDetials> {
+  String selectedColor = '';
   String title = ' ';
   String content = ' ';
 
@@ -20,7 +30,8 @@ class _AddNoteState extends State<AddNote> {
   Widget build(BuildContext context) {
     var mode = Provider.of<ModeProvider>(context);
     return Scaffold(
-      backgroundColor: toColor(selectedColor),
+      backgroundColor:
+          (selectedColor == '') ? widget.color : toColor(selectedColor),
       body: SingleChildScrollView(
         child: SafeArea(
             child: Padding(
@@ -32,7 +43,13 @@ class _AddNoteState extends State<AddNote> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BottomBar(
+                                index: 1,
+                              ),
+                            ));
                       },
                       child: Icon(
                         Icons.arrow_back,
@@ -59,7 +76,6 @@ class _AddNoteState extends State<AddNote> {
                                                 setState(() {
                                                   selectedColor = colors[index];
                                                 });
-                                                Navigator.pop(context);
                                               },
                                               child: Container(
                                                 color: toColor(colors[index]),
@@ -73,30 +89,42 @@ class _AddNoteState extends State<AddNote> {
                             color: (mode.darkMode) ? white : navy),
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: (() async {
-                          if (title == ' ' || content == ' ') {
-                          } else {
-                            await mode.addNote(title, content, selectedColor);
-                            // ignore: use_build_context_synchronously
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BottomBar(
-                                    index: 1,
-                                  ),
-                                ));
-                          }
-                        }),
-                        child: Icon(Icons.save,
-                            color: (mode.darkMode) ? white : navy),
-                      ),
+                      IconButton(
+                          onPressed: (() async {
+                            if (title == widget.title &&
+                                content == widget.content &&
+                                toColor(selectedColor) == widget.color) {
+                            } else {
+                              await mode.editNote(
+                                widget.id,
+                                (title == ' ') ? widget.title : title,
+                                (content == ' ') ? widget.content : content,
+                                (selectedColor == '')
+                                    ? '#${widget.color.value.toRadixString(16)}'
+                                    : selectedColor,
+                              );
+
+                              // ignore: use_build_context_synchronously
+                              AnimatedSnackBar.material(
+                                'Saved Successfully',
+                                type: AnimatedSnackBarType.success,
+                                mobileSnackBarPosition:
+                                    MobileSnackBarPosition.top,
+                                desktopSnackBarPosition:
+                                    DesktopSnackBarPosition.topCenter,
+                                duration: const Duration(seconds: 1),
+                              ).show(context);
+                            }
+                          }),
+                          icon: Icon(Icons.save,
+                              color: (mode.darkMode) ? white : navy))
                     ],
                   )
                 ],
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: TextEditingController(text: widget.title),
                 onChanged: (value) {
                   title = value;
                 },
@@ -107,6 +135,7 @@ class _AddNoteState extends State<AddNote> {
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: TextEditingController(text: widget.content),
                 onChanged: (value) {
                   content = value;
                 },

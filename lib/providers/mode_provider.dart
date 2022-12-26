@@ -1,8 +1,6 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:remi/main.dart';
-import 'package:remi/screens/add_habit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ModeProvider extends ChangeNotifier {
@@ -12,8 +10,6 @@ class ModeProvider extends ChangeNotifier {
   Color color = Colors.white;
 
   List<String>? notes;
-  Map<String, String> todoes = {};
-  Map<String, String> habits = {};
 
   Future<bool> getSelected() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -52,7 +48,8 @@ class ModeProvider extends ChangeNotifier {
     notes = pref.getStringList('notes');
   }
 
-  Future<Map<String, String>?> getTodoes() async {
+  Future<Map<String, String>> getTodoes() async {
+    Map<String, String> todoes = {};
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String>? todoesId = pref.getStringList('todoes');
     for (int i = 0; i < todoesId!.length; i++) {
@@ -62,6 +59,7 @@ class ModeProvider extends ChangeNotifier {
   }
 
   Future<Map<String, String>> getHabits() async {
+    Map<String, String> habits = {};
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String>? habitsId = pref.getStringList('habits');
     for (int i = 0; i < habitsId!.length; i++) {
@@ -179,5 +177,54 @@ class ModeProvider extends ChangeNotifier {
       await pref.setString('habit$id' 'title', title);
       await pref.setStringList('habit$id' 'days', days);
     }
+  }
+
+  editNote(
+      String id, String title, String content, String selectedColor) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    pref.setStringList(id, [title, content, selectedColor]);
+  }
+
+  deleteNote(String id) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String>? notes = pref.getStringList('notes');
+    notes!.remove(id);
+    pref.setStringList('notes', notes);
+    pref.remove(id);
+  }
+
+  editTodo(String id, String? title, List<String> listItems,
+      List<String> listSelect) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('${id}title', title!);
+    await pref.setStringList('${id}items', listItems);
+    await pref.setStringList('${id}selected', listSelect);
+    //print(pref.getKeys());
+  }
+
+  deleteTodo(String id) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String>? todoes2 = pref.getStringList('todoes');
+    todoes2!.remove(id);
+    pref.setStringList('todoes', todoes2);
+    pref.remove('${id}title');
+    pref.remove('${id}items');
+    pref.remove('${id}selected');
+  }
+
+  editHabit(String id, String? title, List<String> days) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('${id}title', title!);
+    await pref.setStringList('${id}days', days);
+  }
+
+  deleteHabit(String id) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String>? habits = pref.getStringList('habits');
+    habits!.remove(id);
+    pref.setStringList('habits', habits);
+    pref.remove('${id}title');
+    pref.remove('${id}days');
   }
 }

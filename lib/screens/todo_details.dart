@@ -1,18 +1,31 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
 import 'package:remi/providers/mode_provider.dart';
 import 'package:remi/screens/bottombar.dart';
 
-class AddTodo extends StatefulWidget {
-  const AddTodo({super.key});
+class TodoDetails extends StatefulWidget {
+  final String id;
+  final String? title;
+  final Map<String, bool>? map;
+  const TodoDetails(
+      {super.key, required this.id, required this.title, required this.map});
 
   @override
-  State<AddTodo> createState() => _AddTodoState();
+  State<TodoDetails> createState() => _TodoDetailsState();
 }
 
-class _AddTodoState extends State<AddTodo> {
-  String title = ' ';
+class _TodoDetailsState extends State<TodoDetails> {
+  String title = '';
+  List items = [];
+  List itemSelect = [];
+  @override
+  void initState() {
+    items = widget.map!.keys.toList();
+    itemSelect = widget.map!.values.toList();
+    super.initState();
+  }
 
   List<listTile> listDynamic = [];
 
@@ -37,7 +50,13 @@ class _AddTodoState extends State<AddTodo> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BottomBar(
+                                index: 2,
+                              ),
+                            ));
                       },
                       child: Icon(
                         Icons.arrow_back,
@@ -46,32 +65,40 @@ class _AddTodoState extends State<AddTodo> {
                   Row(
                     children: [
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: (() async {
-                          List<String> listTitle = [];
-                          List<String> listSelect = [];
-
+                      IconButton(
+                        onPressed: (() async {
+                          List<String> selects = [];
+                          List<String> newItems = [];
+                          for (var item in items) {
+                            newItems.add(item);
+                          }
                           for (var widget in listDynamic) {
-                            listTitle = listTitle + [widget.controller.text];
+                            newItems.add(widget.controller.text);
+                          }
+                          for (var item in itemSelect) {
+                            selects.add(item.toString());
+                          }
+                          for (var widget in listDynamic) {
+                            selects.add(widget.isSelected.toString());
                           }
 
-                          for (var widget in listDynamic) {
-                            listSelect =
-                                listSelect + [widget.isSelected.toString()];
-                          }
-
-                          await mode.addTodo(title, listTitle, listSelect);
+                          await mode.editTodo(
+                              widget.id,
+                              (title == '') ? widget.title : title,
+                              newItems,
+                              selects);
 
                           // ignore: use_build_context_synchronously
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomBar(
-                                  index: 2,
-                                ),
-                              ));
+                          AnimatedSnackBar.material(
+                            'Saved Successfully',
+                            type: AnimatedSnackBarType.success,
+                            mobileSnackBarPosition: MobileSnackBarPosition.top,
+                            desktopSnackBarPosition:
+                                DesktopSnackBarPosition.topCenter,
+                            duration: const Duration(seconds: 1),
+                          ).show(context);
                         }),
-                        child: Icon(Icons.save,
+                        icon: Icon(Icons.save,
                             color: (mode.darkMode) ? white : navy),
                       ),
                     ],
@@ -80,6 +107,7 @@ class _AddTodoState extends State<AddTodo> {
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: TextEditingController(text: widget.title),
                 onChanged: (value) {
                   title = value;
                 },
@@ -96,6 +124,44 @@ class _AddTodoState extends State<AddTodo> {
                     'Items',
                     style: TextStyle(fontSize: 20, color: mode.textColor),
                   ),
+                  ListView.builder(
+                      physics: const ScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: widget.map!.length,
+                      itemBuilder: (_, index) {
+                        return ListTile(
+                            title: TextField(
+                              controller:
+                                  TextEditingController(text: items[index]),
+                              style: TextStyle(
+                                color: mode.textColor,
+                                decoration: itemSelect[index]
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                              onChanged: (value) {
+                                items[index] = value;
+                              },
+                              decoration: InputDecoration.collapsed(
+                                  hintText: 'Item',
+                                  hintStyle: TextStyle(
+                                      fontSize: 20, color: mode.textColor)),
+                            ),
+                            leading: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    itemSelect[index] = !itemSelect[index];
+                                  });
+                                },
+                                child: itemSelect[index]
+                                    ? Icon(
+                                        Icons.check_circle,
+                                        color: mainColor,
+                                      )
+                                    : Icon(Icons.circle_outlined,
+                                        color: mainColor)));
+                      }),
                   ListView.builder(
                       physics: const ScrollPhysics(),
                       scrollDirection: Axis.vertical,
@@ -136,8 +202,8 @@ class _AddTodoState extends State<AddTodo> {
 class listTile extends StatefulWidget {
   TextEditingController controller = TextEditingController();
 
-  bool isSelected;
-  listTile({super.key, this.isSelected = false});
+  bool isSelected = false;
+  listTile({super.key});
 
   @override
   State<listTile> createState() => _listTileState();

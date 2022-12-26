@@ -19,6 +19,9 @@ Color toColor(String hexStringColor) {
     buffer.write('ff');
     buffer.write(hexStringColor.replaceFirst("#", ""));
   }
+  if (hexStringColor.length == 9) {
+    buffer.write(hexStringColor.replaceFirst("#", ""));
+  }
   return Color(int.parse(buffer.toString(), radix: 16));
 }
 
@@ -57,7 +60,9 @@ class MyApp extends StatelessWidget {
                 future: mode.getSelected(),
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return const BottomBar();
+                    return BottomBar(
+                      index: 0,
+                    );
                   } else {
                     return Center(
                       child: Column(

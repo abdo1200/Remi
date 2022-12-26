@@ -1,9 +1,8 @@
-import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
 import 'package:remi/providers/mode_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:remi/screens/bottombar.dart';
 
 class AddHabit extends StatefulWidget {
   const AddHabit({super.key});
@@ -51,6 +50,13 @@ class _AddHabitState extends State<AddHabit> {
                       GestureDetector(
                         onTap: (() async {
                           mode.addHabit(title, period);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BottomBar(
+                                  index: 3,
+                                ),
+                              ));
                         }),
                         child: Icon(Icons.save,
                             color: (mode.darkMode) ? white : navy),
@@ -64,7 +70,7 @@ class _AddHabitState extends State<AddHabit> {
                 onChanged: (value) {
                   title = value;
                 },
-                style: TextStyle(color: white),
+                style: TextStyle(color: mode.textColor),
                 decoration: InputDecoration.collapsed(
                     hintText: 'Enter Habit Title',
                     hintStyle: TextStyle(
@@ -82,9 +88,9 @@ class _AddHabitState extends State<AddHabit> {
                         width: 3), //border of dropdown button
                     borderRadius: BorderRadius.circular(
                         50), //border raiuds of dropdown button
-                    boxShadow: <BoxShadow>[
+                    boxShadow: const <BoxShadow>[
                       //apply shadow on Dropdown button
-                      const BoxShadow(
+                      BoxShadow(
                           color:
                               Color.fromRGBO(0, 0, 0, 0.57), //shadow for button
                           blurRadius: 5) //blur radius of shadow

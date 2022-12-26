@@ -1,80 +1,62 @@
+// ignore_for_file: library_private_types_in_public_api
+
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:remi/main.dart';
-import 'package:remi/providers/mode_provider.dart';
 import 'package:remi/screens/habits.dart';
 import 'package:remi/screens/home.dart';
 import 'package:remi/screens/notes.dart';
 import 'package:remi/screens/setting.dart';
 import 'package:remi/screens/todoes.dart';
-import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class BottomBar extends StatefulWidget {
-  const BottomBar({super.key});
+  int index;
 
+  BottomBar({super.key, required this.index});
   @override
-  State<BottomBar> createState() => _BottomBarState();
+  _BottomBarState createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  Widget? _child;
-
-  @override
-  void initState() {
-    _child = const Home();
-    super.initState();
-  }
-
-  void _handleNavigationChange(int index) {
-    setState(() {
-      switch (index) {
-        case 0:
-          _child = const Home();
-          break;
-        case 1:
-          _child = const Notes();
-          break;
-        case 2:
-          _child = const Todoes();
-          break;
-        case 3:
-          _child = const Habits();
-          break;
-        case 4:
-          _child = const Setting();
-          break;
-      }
-      _child = AnimatedSwitcher(
-        switchInCurve: Curves.easeOut,
-        switchOutCurve: Curves.easeIn,
-        duration: const Duration(milliseconds: 500),
-        child: _child,
-      );
-    });
-  }
+  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  final screens = [
+    const Home(),
+    const Notes(),
+    const Todoes(),
+    const Habits(),
+    const Setting()
+  ];
 
   @override
   Widget build(BuildContext context) {
-    var mode = Provider.of<ModeProvider>(context);
+    final items = <Widget>[
+      const Icon(Icons.home, size: 30), // (3)
+      SvgPicture.asset('assets/img/note.svg', width: 30),
+      SvgPicture.asset('assets/img/todo.svg', width: 30),
+      SvgPicture.asset('assets/img/tracker.svg', width: 30),
+      const Icon(Icons.settings, size: 30),
+    ];
     return Scaffold(
-      backgroundColor: mode.color,
-      body: _child,
-      bottomNavigationBar: FluidNavBar(
-        style: FluidNavBarStyle(
-          barBackgroundColor: mainColor,
-          iconUnselectedForegroundColor: white,
-          iconSelectedForegroundColor: navy,
+        extendBody: true,
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          index: widget.index,
+          height: 60.0,
+          items: items,
+          color: mainColor,
+          buttonBackgroundColor: mainColor,
+          backgroundColor: Colors.transparent,
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 600),
+          onTap: (index) {
+            setState(() {
+              widget.index = index;
+            });
+          },
+          letIndexChange: (index) => true,
         ),
-        icons: [
-          // (2)
-          FluidNavBarIcon(svgPath: 'assets/img/home.svg'), // (3)
-          FluidNavBarIcon(svgPath: 'assets/img/note.svg'),
-          FluidNavBarIcon(svgPath: 'assets/img/todo.svg'),
-          FluidNavBarIcon(svgPath: 'assets/img/tracker.svg'),
-          FluidNavBarIcon(icon: Icons.settings),
-        ],
-        onChange: _handleNavigationChange, // (4)
-      ),
-    );
+        body: screens[widget.index]);
   }
 }

@@ -2,12 +2,20 @@ import 'package:remi/main.dart';
 import 'package:remi/providers/mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:remi/screens/bottombar.dart';
 
-class TodoCard extends StatelessWidget {
+class TodoCard extends StatefulWidget {
+  final String id;
   final Map<String, bool>? map;
   final String? title;
-  const TodoCard({super.key, required this.map, required this.title});
+  const TodoCard(
+      {super.key, required this.map, required this.title, required this.id});
 
+  @override
+  State<TodoCard> createState() => _TodoCardState();
+}
+
+class _TodoCardState extends State<TodoCard> {
   @override
   Widget build(BuildContext context) {
     var mode = Provider.of<ModeProvider>(context);
@@ -28,22 +36,37 @@ class TodoCard extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title!,
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w100,
-                      color: mode.textColor)),
+              Text(
+                widget.title!,
+                style: TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.w100, color: white),
+              ),
+              GestureDetector(
+                  onTap: (() async {
+                    await mode.deleteTodo(widget.id);
+                    setState(() {});
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BottomBar(
+                            index: 2,
+                          ),
+                        ));
+                  }),
+                  child: Icon(Icons.delete, size: 15, color: white))
             ],
           ),
           const SizedBox(height: 15),
           ListView.builder(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              itemCount: map!.length,
+              itemCount: widget.map!.length,
               itemBuilder: ((context, index) {
-                String item = map!.keys.elementAt(index);
-                bool? select = map![item];
+                String item = widget.map!.keys.elementAt(index);
+                bool? select = widget.map![item];
                 return Row(
                   children: [
                     select!

@@ -32,13 +32,14 @@ dependencies:
   flutter:
     sdk: flutter
   liquid_swipe:
-  fluid_bottom_nav_bar:
   rename_app:
   icons_launcher:
   cupertino_icons: ^1.0.2
   percent_indicator: ^4.2.2
   provider: ^6.0.4
   shared_preferences: ^2.0.15
+  curved_navigation_bar: ^1.0.3
+  flutter_svg: ^0.22.0
   animated_snack_bar: ^0.3.0
 
 dev_dependencies:

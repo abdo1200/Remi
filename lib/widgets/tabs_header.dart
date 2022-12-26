@@ -2,7 +2,6 @@ import 'package:remi/main.dart';
 import 'package:remi/providers/mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:remi/screens/add_note.dart';
 
 class TabsHeader extends StatelessWidget {
   final Function function;

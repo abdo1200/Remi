@@ -155,7 +155,9 @@ class _WithBuilder extends State<WithBuilder> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const BottomBar()));
+                          builder: (context) => BottomBar(
+                                index: 0,
+                              )));
                 },
                 child: Container(
                   color: Colors.white.withOpacity(0.01),

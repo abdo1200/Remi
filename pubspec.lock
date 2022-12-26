@@ -78,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  curved_navigation_bar:
+    dependency: "direct main"
+    description:
+      name: curved_navigation_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -99,13 +106,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.4"
-  fluid_bottom_nav_bar:
-    dependency: "direct main"
-    description:
-      name: fluid_bottom_nav_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -119,7 +119,7 @@ packages:
     source: hosted
     version: "2.0.1"
   flutter_svg:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"
