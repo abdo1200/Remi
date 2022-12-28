@@ -46,6 +46,7 @@ class ModeProvider extends ChangeNotifier {
   getNotes() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     notes = pref.getStringList('notes');
+    return notes;
   }
 
   Future<Map<String, String>> getTodoes() async {

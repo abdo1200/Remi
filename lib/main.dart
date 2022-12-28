@@ -25,6 +25,14 @@ Color toColor(String hexStringColor) {
   return Color(int.parse(buffer.toString(), radix: 16));
 }
 
+bool arabic(String s) {
+  for (int i = 0; i < s.length; i++) {
+    int c = s.codeUnitAt(i);
+    if (c >= 0x0600 && c <= 0x06E0) return true;
+  }
+  return false;
+}
+
 int? viewd;
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -49,7 +57,7 @@ class MyApp extends StatelessWidget {
     var mode = Provider.of<ModeProvider>(context);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Remi',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           fontFamily: "BetmRounded",

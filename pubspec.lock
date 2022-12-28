@@ -43,6 +43,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.1"
+  checked_yaml:
+    dependency: transitive
+    description:
+      name: checked_yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.5"
   clock:
     dependency: transitive
     description:
@@ -111,13 +125,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_lints:
+  flutter_app_name:
     dependency: "direct dev"
     description:
-      name: flutter_lints
+      name: flutter_app_name
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "0.1.1"
+  flutter_launcher_icons:
+    dependency: "direct dev"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -156,13 +177,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
-  lints:
+  json_annotation:
     dependency: transitive
     description:
-      name: lints
+      name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "4.7.0"
   liquid_swipe:
     dependency: "direct main"
     description:

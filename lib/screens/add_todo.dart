@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
@@ -37,7 +38,13 @@ class _AddTodoState extends State<AddTodo> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BottomBar(
+                                index: 2,
+                              ),
+                            ));
                       },
                       child: Icon(
                         Icons.arrow_back,
@@ -46,8 +53,8 @@ class _AddTodoState extends State<AddTodo> {
                   Row(
                     children: [
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: (() async {
+                      IconButton(
+                        onPressed: (() async {
                           List<String> listTitle = [];
                           List<String> listSelect = [];
 
@@ -59,19 +66,30 @@ class _AddTodoState extends State<AddTodo> {
                             listSelect =
                                 listSelect + [widget.isSelected.toString()];
                           }
+                          if (title == ' ' || listTitle.isEmpty) {
+                            await AnimatedSnackBar.material(
+                              'Please Fill All Data',
+                              type: AnimatedSnackBarType.error,
+                              mobileSnackBarPosition:
+                                  MobileSnackBarPosition.top,
+                              desktopSnackBarPosition:
+                                  DesktopSnackBarPosition.topCenter,
+                              duration: const Duration(seconds: 1),
+                            ).show(context);
+                          } else {
+                            await mode.addTodo(title, listTitle, listSelect);
 
-                          await mode.addTodo(title, listTitle, listSelect);
-
-                          // ignore: use_build_context_synchronously
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomBar(
-                                  index: 2,
-                                ),
-                              ));
+                            // ignore: use_build_context_synchronously
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomBar(
+                                    index: 2,
+                                  ),
+                                ));
+                          }
                         }),
-                        child: Icon(Icons.save,
+                        icon: Icon(Icons.save,
                             color: (mode.darkMode) ? white : navy),
                       ),
                     ],
@@ -83,10 +101,10 @@ class _AddTodoState extends State<AddTodo> {
                 onChanged: (value) {
                   title = value;
                 },
-                style: TextStyle(color: mode.textColor),
+                style: TextStyle(fontSize: 25, color: mode.textColor),
                 decoration: InputDecoration.collapsed(
                     hintText: 'Title',
-                    hintStyle: TextStyle(fontSize: 20, color: mode.textColor)),
+                    hintStyle: TextStyle(fontSize: 25, color: mode.textColor)),
               ),
               const SizedBox(height: 20),
               Column(

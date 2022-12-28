@@ -22,7 +22,7 @@ class Todoes extends StatelessWidget {
                 children: [
                   TabsHeader(
                       function: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AddTodo()),
@@ -34,55 +34,90 @@ class Todoes extends StatelessWidget {
                       future: mode.getTodoes(),
                       builder: (context, snapshot2) {
                         if (snapshot2.connectionState == ConnectionState.done) {
-                          if (snapshot2.data!.isNotEmpty) {
-                            return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: snapshot2.data!.length,
-                              itemBuilder: (context, index) {
-                                String id =
-                                    snapshot2.data!.keys.elementAt(index);
+                          if (snapshot2.hasData) {
+                            if (snapshot2.data!.isNotEmpty) {
+                              return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: snapshot2.data!.length,
+                                itemBuilder: (context, index) {
+                                  String id =
+                                      snapshot2.data!.keys.elementAt(index);
 
-                                return FutureBuilder<Map<String, bool>>(
-                                    future: mode.getTodoItems(id),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          TodoDetails(
-                                                        id: id,
-                                                        title:
-                                                            snapshot2.data![id],
-                                                        map: snapshot.data,
-                                                      ),
-                                                    ));
-                                              },
-                                              child: TodoCard(
-                                                id: id,
-                                                title: snapshot2.data![id],
-                                                map: snapshot.data,
-                                              ),
-                                            ));
-                                      } else {
-                                        return const CircularProgressIndicator();
-                                      }
-                                    });
-                              },
-                            );
+                                  return FutureBuilder<Map<String, bool>>(
+                                      future: mode.getTodoItems(id),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            TodoDetails(
+                                                          id: id,
+                                                          title: snapshot2
+                                                              .data![id],
+                                                          map: snapshot.data,
+                                                        ),
+                                                      ));
+                                                },
+                                                child: TodoCard(
+                                                  id: id,
+                                                  title: snapshot2.data![id],
+                                                  map: snapshot.data,
+                                                ),
+                                              ));
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      });
+                                },
+                              );
+                            } else {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 80),
+                                  Image.asset('assets/img/no.png',
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .3),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'No Todoes yet',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: mode.textColor),
+                                  ),
+                                ],
+                              );
+                            }
                           } else {
-                            return const Text('No Todoes yet');
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 80),
+                                Image.asset('assets/img/no.png',
+                                    height: MediaQuery.of(context).size.height *
+                                        .3),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'No Todoes yet',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: mode.textColor),
+                                ),
+                              ],
+                            );
                           }
-                          // return Container();
                         } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return const CircularProgressIndicator();
                         }
                       }),
                 ],

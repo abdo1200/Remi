@@ -17,7 +17,7 @@ class Header extends StatelessWidget {
         Text(
           'Make each day your masterpiece!',
           style: TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w100, color: mainColor),
+              fontSize: 16, fontWeight: FontWeight.w100, color: mainColor),
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
@@ -32,7 +33,13 @@ class _AddNoteState extends State<AddNote> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BottomBar(
+                                index: 1,
+                              ),
+                            ));
                       },
                       child: Icon(
                         Icons.arrow_back,
@@ -73,13 +80,22 @@ class _AddNoteState extends State<AddNote> {
                             color: (mode.darkMode) ? white : navy),
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: (() async {
+                      IconButton(
+                        onPressed: (() async {
                           if (title == ' ' || content == ' ') {
+                            await AnimatedSnackBar.material(
+                              'Please Fill All Data',
+                              type: AnimatedSnackBarType.error,
+                              mobileSnackBarPosition:
+                                  MobileSnackBarPosition.top,
+                              desktopSnackBarPosition:
+                                  DesktopSnackBarPosition.topCenter,
+                              duration: const Duration(seconds: 1),
+                            ).show(context);
                           } else {
                             await mode.addNote(title, content, selectedColor);
                             // ignore: use_build_context_synchronously
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => BottomBar(
@@ -88,7 +104,7 @@ class _AddNoteState extends State<AddNote> {
                                 ));
                           }
                         }),
-                        child: Icon(Icons.save,
+                        icon: Icon(Icons.save,
                             color: (mode.darkMode) ? white : navy),
                       ),
                     ],
@@ -100,10 +116,10 @@ class _AddNoteState extends State<AddNote> {
                 onChanged: (value) {
                   title = value;
                 },
-                style: TextStyle(color: white),
+                style: TextStyle(fontSize: 25, color: white),
                 decoration: InputDecoration.collapsed(
                     hintText: 'Title',
-                    hintStyle: TextStyle(fontSize: 20, color: mode.textColor)),
+                    hintStyle: TextStyle(fontSize: 25, color: white)),
               ),
               const SizedBox(height: 20),
               TextField(

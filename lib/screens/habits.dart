@@ -22,7 +22,7 @@ class Habits extends StatelessWidget {
                 children: [
                   TabsHeader(
                       function: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AddHabit()),
@@ -34,48 +34,86 @@ class Habits extends StatelessWidget {
                       future: mode.getHabits(),
                       builder: (context, snapshot2) {
                         if (snapshot2.connectionState == ConnectionState.done) {
-                          if (snapshot2.data!.isNotEmpty) {
-                            return ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: snapshot2.data!.length,
-                              itemBuilder: (context, index) {
-                                String id =
-                                    snapshot2.data!.keys.elementAt(index);
+                          if (snapshot2.hasData) {
+                            if (snapshot2.data!.isNotEmpty) {
+                              return ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: snapshot2.data!.length,
+                                itemBuilder: (context, index) {
+                                  String id =
+                                      snapshot2.data!.keys.elementAt(index);
 
-                                return FutureBuilder<List<bool>>(
-                                    future: mode.getHabitdays(id),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: GestureDetector(
-                                              onTap: (() {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            HabitDetails(
-                                                                id: id,
-                                                                habit: snapshot2
-                                                                    .data![id],
-                                                                days: snapshot
-                                                                    .data)));
-                                              }),
-                                              child: HabitCard(
-                                                  id: id,
-                                                  habit: snapshot2.data![id],
-                                                  days: snapshot.data),
-                                            ));
-                                      } else {
-                                        return const CircularProgressIndicator();
-                                      }
-                                    });
-                              },
-                            );
+                                  return FutureBuilder<List<bool>>(
+                                      future: mode.getHabitdays(id),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Padding(
+                                              padding: const EdgeInsets.all(10),
+                                              child: GestureDetector(
+                                                onTap: (() {
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              HabitDetails(
+                                                                  id: id,
+                                                                  habit: snapshot2
+                                                                          .data![
+                                                                      id],
+                                                                  days: snapshot
+                                                                      .data)));
+                                                }),
+                                                child: HabitCard(
+                                                    id: id,
+                                                    habit: snapshot2.data![id],
+                                                    days: snapshot.data),
+                                              ));
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      });
+                                },
+                              );
+                            } else {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 80),
+                                  Image.asset('assets/img/no.png',
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .3),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'No Habits yet',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: mode.textColor),
+                                  ),
+                                ],
+                              );
+                            }
                           } else {
-                            return const Text('No Habites yet');
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 80),
+                                Image.asset('assets/img/no.png',
+                                    height: MediaQuery.of(context).size.height *
+                                        .3),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'No Habits yet',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: mode.textColor),
+                                ),
+                              ],
+                            );
                           }
                         } else {
                           return const Center(

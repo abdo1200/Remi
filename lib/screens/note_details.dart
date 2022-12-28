@@ -43,7 +43,7 @@ class _NoteDetialsState extends State<NoteDetials> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => BottomBar(
@@ -139,6 +139,9 @@ class _NoteDetialsState extends State<NoteDetials> {
                 onChanged: (value) {
                   content = value;
                 },
+                textDirection: (arabic(widget.content))
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
                 style: TextStyle(color: white),
                 decoration: InputDecoration.collapsed(
                     hintText: 'content',

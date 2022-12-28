@@ -22,7 +22,7 @@ class Notes extends StatelessWidget {
             children: [
               TabsHeader(
                   function: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => const AddNote()),
                     );
@@ -34,61 +34,104 @@ class Notes extends StatelessWidget {
                 child: FutureBuilder<void>(
                     future: mode.getNotes(),
                     builder: (context, snapshot) {
-                      if (mode.notes != null) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          return GridView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemCount: mode.notes!.length,
-                            itemBuilder: (context, index) {
-                              return FutureBuilder<List<String>?>(
-                                  future:
-                                      mode.getNoteDetails(mode.notes![index]),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: GestureDetector(
-                                          onTap: (() {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      NoteDetials(
-                                                          id: mode
-                                                              .notes![index],
-                                                          color: toColor(
-                                                              snapshot
-                                                                  .data![2]),
-                                                          title:
-                                                              snapshot.data![0],
-                                                          content: snapshot
-                                                              .data![1])),
-                                            );
-                                          }),
-                                          child: NoteCard(
-                                              id: mode.notes![index],
-                                              color: toColor(snapshot.data![2]),
-                                              title: snapshot.data![0],
-                                              content: snapshot.data![1]),
-                                        ),
-                                      );
-                                    } else {
-                                      return const CircularProgressIndicator();
-                                    }
-                                  });
-                            },
-                          );
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        if (snapshot.hasData) {
+                          if (mode.notes!.isNotEmpty) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return GridView.builder(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2),
+                                itemCount: mode.notes!.length,
+                                itemBuilder: (context, index) {
+                                  return FutureBuilder<List<String>?>(
+                                      future: mode
+                                          .getNoteDetails(mode.notes![index]),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: GestureDetector(
+                                              onTap: (() {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NoteDetials(
+                                                              id: mode
+                                                                      .notes![
+                                                                  index],
+                                                              color: toColor(
+                                                                  snapshot
+                                                                          .data![
+                                                                      2]),
+                                                              title: snapshot
+                                                                  .data![0],
+                                                              content: snapshot
+                                                                  .data![1])),
+                                                );
+                                              }),
+                                              child: NoteCard(
+                                                  id: mode.notes![index],
+                                                  color: toColor(
+                                                      snapshot.data![2]),
+                                                  title: snapshot.data![0],
+                                                  content: snapshot.data![1]),
+                                            ),
+                                          );
+                                        } else {
+                                          return const CircularProgressIndicator();
+                                        }
+                                      });
+                                },
+                              );
+                            } else {
+                              return const CircularProgressIndicator();
+                            }
+                          } else {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 80),
+                                Image.asset('assets/img/no.png',
+                                    height: MediaQuery.of(context).size.height *
+                                        .3),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'No Notes yet',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: mode.textColor),
+                                ),
+                              ],
+                            );
+                          }
                         } else {
-                          return const Text('No Notes yet');
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 80),
+                              Image.asset('assets/img/no.png',
+                                  height:
+                                      MediaQuery.of(context).size.height * .3),
+                              const SizedBox(height: 20),
+                              Text(
+                                'No Notes yet',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: mode.textColor),
+                              ),
+                            ],
+                          );
                         }
-                        // return Container();
                       } else {
-                        return const Text('No Notes yet');
+                        return const CircularProgressIndicator();
                       }
                     }),
               ),

@@ -76,7 +76,7 @@ class HabitCard extends StatelessWidget {
                             ),
                           ));
                     }),
-                    child: Icon(Icons.delete, size: 15, color: white))
+                    child: Icon(Icons.delete, size: 20, color: mode.textColor))
               ],
             ),
           ],

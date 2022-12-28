@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:remi/main.dart';
@@ -38,7 +39,13 @@ class _AddHabitState extends State<AddHabit> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomBar(
+                                    index: 3,
+                                  )),
+                        );
                       },
                       child: Icon(
                         Icons.arrow_back,
@@ -47,18 +54,30 @@ class _AddHabitState extends State<AddHabit> {
                   Row(
                     children: [
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: (() async {
-                          mode.addHabit(title, period);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomBar(
-                                  index: 3,
-                                ),
-                              ));
+                      IconButton(
+                        onPressed: (() async {
+                          if (title == ' ') {
+                            await AnimatedSnackBar.material(
+                              'Please Fill All Data',
+                              type: AnimatedSnackBarType.error,
+                              mobileSnackBarPosition:
+                                  MobileSnackBarPosition.top,
+                              desktopSnackBarPosition:
+                                  DesktopSnackBarPosition.topCenter,
+                              duration: const Duration(seconds: 1),
+                            ).show(context);
+                          } else {
+                            await mode.addHabit(title, period);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomBar(
+                                    index: 3,
+                                  ),
+                                ));
+                          }
                         }),
-                        child: Icon(Icons.save,
+                        icon: Icon(Icons.save,
                             color: (mode.darkMode) ? white : navy),
                       ),
                     ],
@@ -70,13 +89,10 @@ class _AddHabitState extends State<AddHabit> {
                 onChanged: (value) {
                   title = value;
                 },
-                style: TextStyle(color: mode.textColor),
+                style: TextStyle(fontSize: 25, color: mode.textColor),
                 decoration: InputDecoration.collapsed(
-                    hintText: 'Enter Habit Title',
-                    hintStyle: TextStyle(
-                      fontSize: 20,
-                      color: mode.textColor,
-                    )),
+                    hintText: 'Title',
+                    hintStyle: TextStyle(fontSize: 25, color: mode.textColor)),
               ),
               const SizedBox(height: 20),
               Container(
@@ -129,11 +145,3 @@ class _AddHabitState extends State<AddHabit> {
     );
   }
 }
-
-var items = [
-  'Item 1',
-  'Item 2',
-  'Item 3',
-  'Item 4',
-  'Item 5',
-];

@@ -39,7 +39,9 @@ class NoteCard extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w100, color: white),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w100,
+                      color: mode.textColor),
                 ),
                 GestureDetector(
                     onTap: (() async {
@@ -53,16 +55,26 @@ class NoteCard extends StatelessWidget {
                             ),
                           ));
                     }),
-                    child: Icon(Icons.delete, size: 15, color: white))
+                    child: Icon(Icons.delete, size: 20, color: mode.textColor))
               ],
             ),
             const SizedBox(
               height: 10,
             ),
-            Text(
-              content,
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.w400, color: white),
+            Flexible(
+              child: RichText(
+                overflow: TextOverflow.ellipsis,
+                maxLines: 4,
+                strutStyle: StrutStyle(fontSize: 12.0),
+                textDirection:
+                    (arabic(content)) ? TextDirection.rtl : TextDirection.ltr,
+                text: TextSpan(
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: mode.textColor),
+                    text: content),
+              ),
             ),
           ],
         ),

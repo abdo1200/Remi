@@ -50,7 +50,7 @@ class _TodoDetailsState extends State<TodoDetails> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => BottomBar(

@@ -41,7 +41,9 @@ class _TodoCardState extends State<TodoCard> {
               Text(
                 widget.title!,
                 style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w100, color: white),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w100,
+                    color: mode.textColor),
               ),
               GestureDetector(
                   onTap: (() async {
@@ -56,7 +58,7 @@ class _TodoCardState extends State<TodoCard> {
                           ),
                         ));
                   }),
-                  child: Icon(Icons.delete, size: 15, color: white))
+                  child: Icon(Icons.delete, size: 20, color: mode.textColor))
             ],
           ),
           const SizedBox(height: 15),
